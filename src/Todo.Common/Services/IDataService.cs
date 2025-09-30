@@ -10,7 +10,9 @@ namespace Todo.Common.Services
         Task<T> GetAsync(TKey id);
     }
 
-    public class FileDataService : IDataService<TaskModel?, string>
+    public interface IFileDataService : IDataService<TaskModel?, string> { }
+
+    public class FileDataService : IFileDataService
     {
         private readonly string path;
 
@@ -19,7 +21,7 @@ namespace Todo.Common.Services
         {
             this.path = path;
         }
-        
+
         public async Task<TaskModel?> GetAsync(string id)
         {
             try
@@ -27,42 +29,42 @@ namespace Todo.Common.Services
                 string fileName = TaskModelExtensions.ToFileName(id);
                 string combinedPath = Path.Combine(this.path, fileName);
 
-                if(!File.Exists(combinedPath))
+                if (!File.Exists(combinedPath))
                 {
                     Console.WriteLine($"File Does Not Exist At Path: {combinedPath}");
                     return null;
                 }
-                
+
                 using StreamReader sr = new StreamReader(this.path);
                 string text = await sr.ReadToEndAsync();
 
-                if(string.IsNullOrWhiteSpace(text))
+                if (string.IsNullOrWhiteSpace(text))
                 {
                     Console.WriteLine($"Empty File At Path {combinedPath}");
                 }
 
                 return JsonSerializer.Deserialize<TaskModel>(text);
             }
-            catch(IOException)
+            catch (IOException)
             {
                 Console.WriteLine($"Getting File Failed For {id}");
                 throw;
             }
-            catch(JsonException)
+            catch (JsonException)
             {
                 Console.WriteLine($"Deserializing File Failed");
-                throw; 
+                throw;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Console.WriteLine($"RUT ROH RAGGY");
                 throw;
             }
         }
 
-       public async Task SaveAsync(TaskModel? obj)
+        public async Task SaveAsync(TaskModel? obj)
         {
-            if(obj is null)
+            if (obj is null)
             {
                 return;
             }
@@ -75,17 +77,17 @@ namespace Todo.Common.Services
                 string text = JsonSerializer.Serialize(obj);
                 await sw.WriteAsync(text);
             }
-            catch(IOException)
+            catch (IOException)
             {
                 Console.WriteLine($"Failed Writing File For Task {obj.Key}");
                 throw;
             }
-            catch(JsonException)
+            catch (JsonException)
             {
                 Console.WriteLine($"Serializing File Failed");
-                throw; 
+                throw;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Console.WriteLine($"RUT ROH RAGGY");
                 throw;
