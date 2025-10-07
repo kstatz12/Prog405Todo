@@ -26,19 +26,20 @@ namespace Todo.Common.Models
         public string Description { get; private set; }
         public DateTime DueDate { get; private set; }
 
-        public static TaskModel CreateTask(CreateTaskRequest request)
+        public static Result<TaskModel> CreateTask(CreateTaskRequest request)
         {
-            if(!request.IsValid())
+            var validationResult = request.IsValid();
+            if(validationResult.IsErr())
             {
-                throw new InvalidDataException();
+                return Result<TaskModel>.Err(validationResult.GetErr());
             }
 
-            return new TaskModel {
+            return Result<TaskModel>.Ok(new TaskModel {
                 Key = Guid.NewGuid().ToString(),
                 Name = request.Name,
                 Description = request.Description,
                 DueDate = request.DueDate
-            };
+            });
         }
     }
 }

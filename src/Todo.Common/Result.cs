@@ -8,18 +8,51 @@ public class Result
 {
     private bool ok;
 
-    public string Error { get; private set; }
+    private string error;
 
     private Result()
     {
         this.ok = true;
-        this.Error = string.Empty;
+        this.error = string.Empty;
     }
 
     private Result(string error)
     {
         this.ok = false;
-        this.Error = error;
+        this.error = error;
+    }
+
+    public static TR Evaluate<TR>(Func<Result> f, Func<string, TR> onErr, Func<TR> onOk)
+    {
+        var r = f();
+        if (r.IsErr())
+        {
+            return onErr(r.error);
+        }
+        return onOk();
+    }
+
+    public bool IsErr()
+    {
+        if (this.ok)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public bool IsOk()
+    {
+        if (!this.ok)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public string GetErr()
+    {
+        return this.error;
     }
 
     public static Result Ok()
@@ -38,18 +71,26 @@ public class Result<T>
 {
     private bool ok;
 
-    private string error; 
+    private string error;
 
-    private T? value; 
+    private T? value;
 
     public bool IsErr()
     {
-        return this.ok;
+        if (this.ok)
+        {
+            return false;
+        }
+        return true;
     }
 
     public bool IsOk()
     {
-       return this.ok; 
+        if (!this.ok)
+        {
+            return false;
+        }
+        return true;
     }
 
     public string GetErr()

@@ -1,4 +1,5 @@
 using Todo.Common.Models;
+using Todo.Common.Requests;
 using Todo.Common.Services;
 
 namespace Todo.Test;
@@ -12,9 +13,14 @@ public class ClassServiceTest
     }
 
     [Fact]
-    public void CreateTaskSucceeds()
+    public async Task CreateTaskSucceeds()
     {
         var taskService = new TaskService(this.service);
+
+
+        var happyRequest = new CreateTaskRequest("Test Task", "Dummy Descritopn", DateTime.UtcNow.AddDays(3));
+
+        var createTaskResult = await taskService.CreateTaskAsync(happyRequest);
         
     }
 }

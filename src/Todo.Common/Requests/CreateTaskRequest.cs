@@ -14,18 +14,18 @@ namespace Todo.Common.Requests
         public DateTime DueDate { get; }
 
 
-        public bool IsValid()
+        public Result IsValid()
         {
             if(string.IsNullOrWhiteSpace(this.Name))
             {
-                return false;
+                return Result.Err("Name Required");
             }
 
             if(this.DueDate <= DateTime.UtcNow)
             {
-                return false;
+                return Result.Err("Due Date Must Be In Future");
             }
-            return true;
+            return Result.Ok();
         }
     }
 }
