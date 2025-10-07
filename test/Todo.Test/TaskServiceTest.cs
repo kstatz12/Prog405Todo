@@ -15,7 +15,7 @@ public class ClassServiceTest
     public void CreateTaskSucceeds()
     {
         var taskService = new TaskService(this.service);
-
+        
     }
 }
 

@@ -1,11 +1,44 @@
+using Todo.Common.Requests;
+
 namespace Todo.Common.Models
 {
     public class TaskModel
     {
-        public TaskModel()
+        private TaskModel()
         {
+            //MUST:
+            //Exist
             this.Key = string.Empty;
+            //MUST:
+            //Exist
+            this.Name = string.Empty;
+            //Optional
+            this.Description = string.Empty;
+            //Must:
+            //Be In The Future
+            //Exist
+            this.DueDate = DateTime.MinValue;
         }
-        public string Key {get; set;}
+
+        public string Key { get; private set; }
+
+        public string Name { get; private set; }
+        public string Description { get; private set; }
+        public DateTime DueDate { get; private set; }
+
+        public static TaskModel CreateTask(CreateTaskRequest request)
+        {
+            if(!request.IsValid())
+            {
+                throw new InvalidDataException();
+            }
+
+            return new TaskModel {
+                Key = Guid.NewGuid().ToString(),
+                Name = request.Name,
+                Description = request.Description,
+                DueDate = request.DueDate
+            };
+        }
     }
 }

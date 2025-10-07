@@ -1,3 +1,4 @@
+using Todo.Common.Models;
 using Todo.Common.Requests;
 
 namespace Todo.Common.Services
@@ -18,8 +19,8 @@ namespace Todo.Common.Services
         
         public async Task CreateTaskAsync(CreateTaskRequest request)
         {
-            //DO THE STUFF
-            await Task.CompletedTask;
+            var model = TaskModel.CreateTask(request);
+            await this.fileDataService.SaveAsync(model);
         }
     }
 }
