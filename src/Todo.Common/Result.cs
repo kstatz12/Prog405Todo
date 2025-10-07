@@ -8,7 +8,7 @@ public class Result
 {
     private bool ok;
 
-    public string Error {get; private set;}
+    public string Error { get; private set; }
 
     private Result()
     {
@@ -33,36 +33,56 @@ public class Result
     }
 }
 
-public class Result<T> where T : class
+public class Result<T>
+    where T : class
 {
     private bool ok;
 
-    public string Error {get; private set;}
+    private string error; 
 
-    public T? Value { get; private set; }
+    private T? value; 
+
+    public bool IsErr()
+    {
+        return this.ok;
+    }
+
+    public bool IsOk()
+    {
+       return this.ok; 
+    }
+
+    public string GetErr()
+    {
+        return this.error;
+    }
+
+    public T? GetVal()
+    {
+        return this.value;
+    }
 
     private Result(T val)
     {
-        this.Value = val;
+        this.value = val;
         this.ok = true;
-        this.Error = string.Empty;
+        this.error = string.Empty;
     }
 
     private Result(string error)
     {
-        this.Value = null;
+        this.value = null;
         this.ok = false;
-        this.Error = error;
+        this.error = error;
     }
 
-
-    public static Result Ok(T val)
+    public static Result<T> Ok(T val)
     {
-        return new Result(val);
+        return new Result<T>(val);
     }
 
-    public static Result Err(string error)
+    public static Result<T> Err(string error)
     {
-        return new Result(error);
+        return new Result<T>(error);
     }
 }
